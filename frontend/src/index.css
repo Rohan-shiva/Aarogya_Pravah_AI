@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9ff;
+    color: #111c2d;
+    font-family: 'Inter', sans-serif;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-outlined.filled-icon,
+.material-symbols-outlined[data-weight="fill"],
+.icon-fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.clinical-bg-pattern {
+  background-image: radial-gradient(#c3c6d5 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-pattern {
+  background-image: radial-gradient(#d8e3fb 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.clinical-input {
+  background-color: #ffffff;
+  border: 1px solid #c3c6d5;
+  border-radius: 0.125rem;
+  color: #111c2d;
+  transition: all 0.2s ease;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.clinical-input:focus {
+  outline: none;
+  border-color: #003c90;
+  box-shadow: 0 0 0 1px #003c90;
+}
+
+.clinical-input::placeholder {
+  color: #737784;
+}
+
+.btn-primary {
+  background-color: #0f52ba;
+  color: #ffffff;
+  border-radius: 0.125rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #003c90;
+}
+
+.btn-secondary {
+  border: 1px solid #0f52ba;
+  color: #0f52ba;
+  background-color: transparent;
+  border-radius: 0.125rem;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #f0f3ff;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
