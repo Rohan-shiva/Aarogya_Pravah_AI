@@ -9,7 +9,10 @@ const getGroqClient = () => {
   }
 
   if (!groqClient) {
-    groqClient = new Groq({ apiKey });
+    groqClient = new Groq({
+      apiKey,
+      timeout: 10000,
+    });
   }
 
   return groqClient;
