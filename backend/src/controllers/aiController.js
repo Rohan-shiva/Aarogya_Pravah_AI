@@ -179,6 +179,56 @@ const getImageAnalysis = async (req, res, next) => {
   }
 };
 
+/**
+ * @route   POST /api/ai/test-groq
+ * @desc    Admin / Dev test endpoint to perform controlled live test call to Groq API
+ * @access  Private (Staff, Doctor)
+ */
+const testGroqConnection = async (req, res, next) => {
+  try {
+    const startTime = Date.now();
+    const testPayload = {
+      patientName: 'Test Connectivity Verification',
+      age: 45,
+      gender: 'Male',
+      department: 'Emergency Medicine',
+      symptoms: ['Mild headache', 'Intake triage connectivity verification'],
+      symptomsDescription: 'Controlled automated system health check request.',
+      possibleCondition: 'Health Check',
+      reportedSeverity: 'MEDIUM',
+      staffSeverity: 'MEDIUM',
+      isAccident: false,
+      accidentSeverity: 'NONE',
+      medicalImageType: 'NONE',
+    };
+
+    const triageResult = await analyzePatientTriage(testPayload);
+    const latencyMs = Date.now() - startTime;
+
+    const isSuccess = !triageResult.isAiFallback;
+
+    return ApiResponse.success(res, isSuccess ? 'Groq API connection test succeeded' : 'Groq API connection check engaged fallback', {
+      status: isSuccess ? 'ONLINE' : 'FALLBACK',
+      latencyMs,
+      isAiFallback: triageResult.isAiFallback,
+      fallbackReason: triageResult.fallbackReason || null,
+      errorMessage: triageResult.errorMessage || null,
+      modelName: triageResult.modelName,
+      parsedResult: {
+        urgencyLevel: triageResult.urgencyLevel,
+        riskLevel: triageResult.riskLevel,
+        priorityRecommendation: triageResult.priorityRecommendation,
+        riskFactors: triageResult.riskFactors,
+        suggestedVitalsToCheck: triageResult.suggestedVitalsToCheck,
+        reason: triageResult.reason,
+      },
+      testedAt: new Date(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Validation rules
 const imageResultValidation = [
   body('imageScore').isFloat({ min: 0, max: 1 }).withMessage('imageScore must be a float between 0.0 and 1.0'),
@@ -190,7 +240,9 @@ const imageResultValidation = [
 module.exports = {
   runGroqTriage,
   getGroqAnalysis,
+  testGroqConnection,
   receiveImageAnalysisResult,
   getImageAnalysis,
   imageResultValidation,
 };
+

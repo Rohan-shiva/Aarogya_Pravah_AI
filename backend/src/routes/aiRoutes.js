@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   runGroqTriage,
   getGroqAnalysis,
+  testGroqConnection,
   receiveImageAnalysisResult,
   getImageAnalysis,
   imageResultValidation,
@@ -14,6 +15,7 @@ const validate = require('../middleware/validateMiddleware');
 router.post('/image-analysis-result', imageResultValidation, validate, receiveImageAnalysisResult);
 
 // Staff and doctor AI analysis routes
+router.post('/test-groq', protect, authorize('STAFF', 'DOCTOR'), testGroqConnection);
 router.post('/analyze-triage/:appointmentId', protect, authorize('STAFF', 'DOCTOR'), runGroqTriage);
 router.get('/analysis/:appointmentId', protect, authorize('STAFF', 'DOCTOR'), getGroqAnalysis);
 router.get('/image-analysis/:appointmentId', protect, authorize('STAFF', 'DOCTOR'), getImageAnalysis);

@@ -51,6 +51,14 @@ const aiAnalysisSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    fallbackReason: {
+      type: String,
+      trim: true,
+    },
+    errorMessage: {
+      type: String,
+      trim: true,
+    },
     disclaimer: {
       type: String,
       default: 'PRELIMINARY DECISION SUPPORT ONLY. This AI analysis is an administrative triage aid and does NOT constitute a medical diagnosis or treatment plan.',
