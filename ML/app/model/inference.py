@@ -18,10 +18,14 @@ def get_or_load_model() -> tf.keras.Model:
 
     model = build_densenet121_model(num_classes=config.NUM_CLASSES, trainable_backbone=False)
 
-    if os.path.exists(config.MODEL_WEIGHTS_FILE):
+    weights_path = config.MODEL_WEIGHTS_FILE
+    legacy_weights_path = os.path.join(config.MODEL_DIR, "densenet121_chest_xray.h5")
+    target_weights = weights_path if os.path.exists(weights_path) else (legacy_weights_path if os.path.exists(legacy_weights_path) else None)
+
+    if target_weights:
         try:
-            model.load_weights(config.MODEL_WEIGHTS_FILE)
-            print(f"[ML Inference] Loaded fine-tuned weights from {config.MODEL_WEIGHTS_FILE}")
+            model.load_weights(target_weights)
+            print(f"[ML Inference] Loaded fine-tuned weights from {target_weights}")
         except Exception as e:
             print(f"[ML Inference Warning] Failed to load saved weights: {e}. Using ImageNet pretrained initialization.")
     else:

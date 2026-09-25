@@ -33,7 +33,7 @@ class MLConfig:
 
     # Model Artifacts Path
     MODEL_DIR: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "models")
-    MODEL_WEIGHTS_FILE: str = os.path.join(MODEL_DIR, "densenet121_chest_xray.h5")
+    MODEL_WEIGHTS_FILE: str = os.path.join(MODEL_DIR, "densenet121_chest_xray.weights.h5")
     MODEL_VERSION: str = "densenet121-tf-v1.0"
 
 config = MLConfig()
