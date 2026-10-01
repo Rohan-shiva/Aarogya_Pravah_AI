@@ -82,6 +82,7 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date(),
     environment: process.env.NODE_ENV || 'development',
     groqConfigured: Boolean(process.env.GROQ_API_KEY && process.env.GROQ_API_KEY !== 'your_groq_api_key_here'),
+    mlServiceConfigured: Boolean(process.env.ML_SERVICE_URL || process.env.PYTORCH_SERVICE_URL),
   });
 });
 

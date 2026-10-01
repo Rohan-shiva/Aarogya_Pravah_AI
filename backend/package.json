@@ -7,7 +7,13 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node scripts/seed.js",
-    "test:flow": "node scripts/testQueueFlow.js"
+    "test": "node scripts/testEndToEndWorkflow.js",
+    "test:flow": "node scripts/testQueueFlow.js",
+    "test:groq": "node scripts/testGroqIntegration.js",
+    "test:priority": "node scripts/testPriorityAndSockets.js",
+    "test:ml": "node scripts/testMlBackendIntegration.js",
+    "test:combined": "node scripts/testCombinedGroqMlPriority.js",
+    "test:e2e": "node scripts/testEndToEndWorkflow.js"
   },
   "keywords": [
     "healthcare",
