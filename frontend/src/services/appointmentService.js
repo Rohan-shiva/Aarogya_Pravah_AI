@@ -20,7 +20,13 @@ export const appointmentService = {
       const possibleCondition = appointment.possibleDisease || appointment.possibleCondition || "";
       const symptoms = appointment.symptoms || "General discomfort";
       const symptomsDescription = appointment.symptomsDescription || "";
-      const severityLevel = (appointment.severity || appointment.severityLevel || "MEDIUM").toUpperCase();
+      let rawSev = (appointment.severity || appointment.severityLevel || "MEDIUM").toString().trim().toUpperCase();
+      if (rawSev === "EASY" || rawSev === "LOW") rawSev = "LOW";
+      else if (rawSev === "HIGH") rawSev = "HIGH";
+      else if (rawSev === "CRITICAL" || rawSev === "SEVERE") rawSev = "CRITICAL";
+      else rawSev = "MEDIUM";
+      const severityLevel = rawSev;
+
       const isAccident = appointment.isAccidentalCase || appointment.isAccident || false;
       const accidentSeverity = (appointment.accidentSeverity || "NONE").toUpperCase();
 

@@ -74,9 +74,16 @@ const bookAppointment = async (req, res, next) => {
       });
     }
 
-    // 2. Generate unique token number
+    // 2. Generate unique token number with collision retry check
     const isAccidentCase = isAccident === true || isAccident === 'true';
-    const tokenNumber = generateTokenNumber(department, isAccidentCase);
+    let tokenNumber;
+    let attempts = 0;
+    while (attempts < 5) {
+      tokenNumber = generateTokenNumber(department, isAccidentCase);
+      const existing = await Appointment.findOne({ tokenNumber });
+      if (!existing) break;
+      attempts++;
+    }
 
     // 3. Handle optional uploaded medical image via Cloudinary streaming
     let medicalImageUrl = '';
@@ -117,7 +124,7 @@ const bookAppointment = async (req, res, next) => {
       possibleCondition,
       symptoms: parsedSymptoms,
       symptomsDescription,
-      reportedSeverity: (severityLevel || 'MEDIUM').toUpperCase(),
+      reportedSeverity: normalizeSeverity(severityLevel),
       isAccident: isAccidentCase,
       accidentSeverity: isAccidentCase ? (accidentSeverity || 'MEDIUM').toUpperCase() : 'NONE',
       medicalImage: medicalImageAsset || undefined,
@@ -186,15 +193,39 @@ const getPatientByToken = async (req, res, next) => {
   }
 };
 
+/**
+ * Helper to normalize severity levels from various UI formats (e.g. Easy, Low, Medium, High, Critical)
+ */
+const normalizeSeverity = (sev) => {
+  if (!sev) return 'MEDIUM';
+  const clean = String(sev).trim().toUpperCase();
+  if (clean === 'EASY' || clean === 'LOW') return 'LOW';
+  if (clean === 'MEDIUM' || clean === 'MED') return 'MEDIUM';
+  if (clean === 'HIGH') return 'HIGH';
+  if (clean === 'CRITICAL' || clean === 'SEVERE') return 'CRITICAL';
+  return 'MEDIUM';
+};
+
 // Validation rules
 const bookAppointmentValidation = [
   body('name').trim().notEmpty().withMessage('Patient name is required'),
   body('age').isInt({ min: 0, max: 130 }).withMessage('Valid age between 0 and 130 is required'),
-  body('gender').isIn(['Male', 'Female', 'Other']).withMessage('Gender must be Male, Female, or Other'),
+  body('gender')
+    .optional()
+    .customSanitizer((val) => {
+      if (!val) return 'Male';
+      const clean = String(val).trim().toLowerCase();
+      if (clean === 'female' || clean === 'f') return 'Female';
+      if (clean === 'other' || clean === 'o') return 'Other';
+      return 'Male';
+    })
+    .isIn(['Male', 'Female', 'Other'])
+    .withMessage('Gender must be Male, Female, or Other'),
   body('phoneNumber').trim().notEmpty().withMessage('Contact phone number is required'),
   body('department').trim().notEmpty().withMessage('Department is required'),
   body('severityLevel')
     .optional()
+    .customSanitizer((val) => normalizeSeverity(val))
     .isIn(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'])
     .withMessage('Severity level must be LOW, MEDIUM, HIGH, or CRITICAL'),
 ];
